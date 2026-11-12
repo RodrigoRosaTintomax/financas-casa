@@ -303,6 +303,91 @@ const cfg = ()=>{const c=S.cfg||{};return {...DEFAULT_CFG,...c,tetos:{...(c.teto
 const pessoaNome = id=>id==="casa"?"Casa":(cfg().pessoas.find(p=>p.id===id)||{}).nome||"—";
 const bancoNome = id=>(cfg().bancos.find(b=>b.id===id)||{}).nome||id||"—";
 
+
+/* ---------- Entender o "o que foi" escrito à mão ---------- */
+const SIN = {
+  aluguel:["aluguel","prestacao da casa","financiamento da casa","financiamento imobiliario"],
+  condominio:["condominio"], energia:["luz","energia","celesc","conta de luz"], agua:["agua","casan","conta de agua"],
+  internet:["internet","wifi","tv a cabo","palmasnet"], gas:["gas","botijao"], terreno:["terreno","clivanda","lote"],
+  "manut-casa":["conserto","reforma","encanador","eletricista","pedreiro","material de construcao","tinta","pintura","manutencao da casa","ferragem","lampada","torneira"],
+  mobilia:["movel","moveis","sofa","cama","colchao","guarda roupa","geladeira","fogao","maquina de lavar","microondas","tv nova","televisao","armario","mesa"],
+  "casa-extra":["decoracao","utensilio","panela","toalha","lencol","enfeite","organizador","coisa pra casa","coisas pra casa"],
+  "compra-mes":["compra do mes","rancho","mercado do mes","compra grande"],
+  reposicao:["mercado","pao","padaria","leite","fruta","verdura","acougue","carne","ovos","hortifruti","mercearia","reposicao","feira"],
+  superfluo:["refrigerante","chocolate","bolacha","doce","salgadinho","cerveja","besteira no mercado","guloseima"],
+  delivery:["ifood","delivery","pedimos","pedido","entrega","tele"],
+  lanche:["lanche","cafe","cafezinho","pastel","coxinha","sorvete","acai","salgado","lanchonete","padaria na rua","cachorro quente","hamburguer","xis"],
+  restaurante:["restaurante","jantar fora","almoco fora","almocamos","jantamos","pizza","pizzaria","sushi","rodizio","churrascaria"],
+  "refeicao-trab":["almoco do trabalho","marmita","refeicao no trabalho","almoco no servico","quentinha"],
+  combustivel:["gasolina","combustivel","abasteci","abastecer","posto","etanol","alcool","diesel"],
+  "manut-carro":["mecanico","oficina","pneu","oleo","revisao","troca de oleo","lavacao","lava car","lavagem do carro","bateria do carro","alinhamento","peca do carro"],
+  "financ-carro":["parcela do carro","financiamento do carro","prestacao do carro"],
+  ipva:["ipva","seguro do carro","licenciamento","dpvat"],
+  pedagio:["pedagio","estacionamento","zona azul","balsa"],
+  "app-transp":["uber","99","taxi","corrida"], multa:["multa"],
+  farmacia:["farmacia","remedio","medicamento","drogaria","vitamina","antibiotico"],
+  consulta:["consulta","medico","dentista","psicologo","pediatra","terapia","fisioterapia","nutricionista"],
+  exames:["exame","laboratorio","ultrassom","raio x","hemograma"],
+  "plano-saude":["plano de saude","unimed"], academia:["academia","personal","natacao","esporte","futebol","crossfit","pilates"],
+  faculdade:["faculdade","estacio","curso","mensalidade","pos graduacao","matricula"], escola:["escola","material escolar","uniforme","creche"],
+  livros:["livro","livros","ebook","curso online"],
+  filhos:["filho","filha","criancas","bebe","fralda","brinquedo","roupa do","roupa da"],
+  pets:["pet","cachorro","gato","racao","veterinario","petshop","banho e tosa"],
+  presente:["presente","aniversario de","lembrancinha","cha de bebe","cha de panela","amigo secreto"],
+  "ajuda-fam":["ajudei","ajuda","emprestei","mae","pai","sogra","sogro","irmao","irma","familia"],
+  dizimo:["dizimo"], oferta:["oferta","doacao","igreja","missoes","arca","culto","campanha"],
+  celular:["recarga","plano do celular","credito celular","claro","vivo","tim"],
+  streaming:["netflix","spotify","disney","prime","youtube premium","globoplay","hbo","max","deezer"],
+  apps:["app","aplicativo","icloud","google one","chatgpt","assinatura"],
+  "sem-uso":["assinatura que nao uso","esqueci de cancelar"],
+  "roupa-nec":["roupa de trabalho","sapato","tenis pro trabalho","uniforme","precisava de roupa"],
+  "roupa-vont":["roupa","blusa","camisa","calca","vestido","tenis","bermuda","short","bolsa","acessorio","oculos"],
+  eletronico:["celular novo","fone","carregador","notebook","computador","eletronico","cabo","mouse","teclado"],
+  barbearia:["barbearia","barbeiro","cabelo","corte de cabelo"], manicure:["manicure","unha","sobrancelha","salao","depilacao","cilios"],
+  perfume:["perfume","maquiagem","cosmetico","creme","skincare","boticario","natura"],
+  impulso:["impulso","nao precisava","vontade","bobeira","besteira","sem pensar"],
+  passeio:["passeio","cinema","parque","praia","shopping","programa","boliche"],
+  viagem:["viagem","hotel","pousada","passagem","airbnb","hospedagem"],
+  festa:["festa","evento","show","casamento de","formatura","ingresso","aniversario"],
+  apostas:["aposta","bet","loteria","mega sena","bicho","rifa","jogo"],
+  parcela:["emprestimo","parcela do emprestimo","credito pessoal"], consorcio:["consorcio","ademicon"],
+  crediario:["havan","crediario","carne da loja","parcela da loja"], juros:["juros","multa por atraso","atraso"],
+  rotativo:["rotativo","cheque especial","limite da conta"], tarifa:["tarifa","iof","taxa do banco","cesta de servicos"],
+  anuidade:["anuidade"], fatura:["fatura","paguei o cartao"], transferencia:["transferi para mim","entre contas","minha outra conta","passei pro inter","passei pro sicredi"],
+  objetivo:["guardei","guardar","poupanca","cofrinho","caixinha","chale","casa propria"],
+  reserva:["reserva","emergencia"], investimento:["investi","investimento","cdb","tesouro","acao","acoes","fundo","cripto","integralizacao"],
+  "pecas-biz":["peca biz","pecas biz","biz"], "doc-casamento":["casamento","cartorio","certidao"],
+  imprevisto:["imprevisto","emergencia medica","guincho","quebrou"],
+  salario:["salario","pagamento do mes","pagamento da empresa","cooperativa"], comissao:["comissao","bonus","premiacao","plr"],
+  extra:["extra","freela","bico","vendi","venda"], reembolso:["reembolso","me devolveu","me pagou de volta","estorno"],
+  "transf-entrada":["transferencia minha","da minha conta","entre contas"], resgate:["resgatei","resgate"]
+};
+const PARADAS=new Set("a o os as de da do das dos e em no na nos nas um uma uns umas para pra pro com que foi eu ela ele nos meu minha seu sua por pelo pela mais muito pouco hoje ontem la aqui isso esse essa coisa coisas".split(" "));
+function tokens(t){ return norm(t).replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>=3&&!PARADAS.has(w)); }
+function entenderUso(txt, tipo){
+  const n=" "+norm(txt).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ")+" "; if(n.trim().length<2) return null;
+  const permitidos=new Set((tipo==="entrada"?CATS_IN:CATS).flatMap(c=>c.m.map(m=>m[0])));
+  const pts={};
+  for(const [mot,lista] of Object.entries(SIN)){ if(!permitidos.has(mot)) continue;
+    for(const w of lista){ if(n.includes(" "+w+" ")||(w.length>=5&&n.includes(w))) pts[mot]=(pts[mot]||0)+2+w.split(" ").length; } }
+  // aprende com o que vocês já escreveram e classificaram
+  const tk=tokens(txt); if(tk.length){ const cnt={}, tot={};
+    for(const l of S.lanc.values()){ if(!l.uso||!l.motivo||l.status!=="ok"||!permitidos.has(l.motivo)) continue;
+      for(const w of new Set(tokens(l.uso))){ tot[w]=(tot[w]||0)+1; (cnt[w]=cnt[w]||{})[l.motivo]=(cnt[w][l.motivo]||0)+1; } }
+    for(const w of tk){ if(!cnt[w]) continue; for(const [mot,c] of Object.entries(cnt[w])) pts[mot]=(pts[mot]||0)+4*c/tot[w]+Math.min(c,3); } }
+  const rank=Object.entries(pts).sort((a,b)=>b[1]-a[1]); if(!rank.length) return null;
+  const mot=rank[0][0]; let nat=MOT[mot].nat;
+  if(tipo!=="entrada"){
+    if(/nao precisava|vontade|impulso|bobeira|besteira|sem necessidade|por conveniencia|preguica/.test(n)) nat="V";
+    else if(/precisava|necessari|urgente|obrigatori|tinha que/.test(n)&&nat==="V") nat="E";
+    else if(/guard|invest|poupa|reserva/.test(n)) nat="F";
+  }
+  let pessoa=null; const c=cfg(); for(const p of c.pessoas){ if(n.includes(" "+norm(p.nome)+" ")) pessoa=p.id; }
+  if(/ esposa | minha mulher | dela /.test(n)) pessoa=(c.pessoas[1]||{}).id||pessoa;
+  const seg=rank[1]?rank[1][1]:0; const conf=rank[0][1]>=seg*1.5?"alta":"media";
+  return {motivo:mot, nat, pessoa, conf, alt:rank.slice(1,3).map(r=>r[0])};
+}
+
 /* ---------- Armazenamento: banco compartilhado (db) ou local ---------- */
 const Store = {
   db:null,
@@ -558,7 +643,7 @@ function vExtrato(v){
   let dia="", rows="";
   ls.forEach(l=>{ if(l.data!==dia){ dia=l.data; rows+=`<div class="day">${esc(diaSemana(l.data))}</div>`; }
     const mo=MOT[l.motivo]; const n=l.tipo==="entrada"?"R":l.nat;
-    rows+=`<button class="li" data-act="editar" data-id="${esc(l.id)}"><span class="t">${esc(mo?mo.nome:(l.descricao||"Sem motivo"))}</span><span class="s">${mo&&l.descricao?esc(l.descricao)+" · ":""}${esc(pessoaNome(l.pessoa||"casa"))} · ${esc(bancoNome(l.conta))} <span class="pill n n-${n}">${NAT[n].nome}</span></span><span class="v num ${l.tipo==="entrada"?"pos":""}">${l.tipo==="entrada"?"+":"−"}${brl(+l.valor)}</span></button>`; });
+    rows+=`<button class="li" data-act="editar" data-id="${esc(l.id)}"><span class="t">${esc(mo?mo.nome:(l.descricao||"Sem motivo"))}</span><span class="s">${l.uso?"“"+esc(l.uso)+"” · ":""}${mo&&l.descricao?esc(l.descricao)+" · ":""}${esc(pessoaNome(l.pessoa||"casa"))} · ${esc(bancoNome(l.conta))} <span class="pill n n-${n}">${NAT[n].nome}</span></span><span class="v num ${l.tipo==="entrada"?"pos":""}">${l.tipo==="entrada"?"+":"−"}${brl(+l.valor)}</span></button>`; });
   h+=`<div class="card"><div class="list" style="gap:0">${rows||'<div class="empty">Nenhum lançamento neste filtro.</div>'}</div></div>`;
   v.innerHTML=h;
   const b=$("#busca"); b.addEventListener("input",()=>{S.busca=b.value; const pos=b.selectionStart; vExtrato(v); const nb=$("#busca"); nb.focus(); try{nb.setSelectionRange(pos,pos);}catch(e){}});
@@ -740,7 +825,7 @@ function conexoesHTML(){ const st=S.status||{}; const pill=(ok,t)=>`<span class=
 let F=null;
 function abrirLanc(l, modo){
   const isEnt = l? l.tipo==="entrada" : false;
-  F={ id:l?l.id:null, modo:modo||(l?"editar":"novo"), tipo:isEnt?"entrada":"saida", valor:l?+l.valor:"", data:l?l.data:hoje(), descricao:l?l.descricao||"":"", motivo:l?l.motivo||l.sugestao||null:null, cat:null, nat:l?l.nat:null, pessoa:l?l.pessoa||"casa":"p1", conta:l?l.conta||"sicredi-cc":"sicredi-cc", meta:l?l.meta||null:null, origem:l?l.origem||"manual":"manual", orig:l||null };
+  F={ id:l?l.id:null, modo:modo||(l?"editar":"novo"), tipo:isEnt?"entrada":"saida", valor:l?+l.valor:"", data:l?l.data:hoje(), descricao:l?l.descricao||"":"", motivo:l?l.motivo||l.sugestao||null:null, cat:null, nat:l?l.nat:null, pessoa:l?l.pessoa||"casa":"p1", conta:l?l.conta||"sicredi-cc":"sicredi-cc", meta:l?l.meta||null:null, origem:l?l.origem||"manual":"manual", orig:l||null, uso:l?l.uso||"":"" };
   if(F.motivo&&MOT[F.motivo]){ F.cat=MOT[F.motivo].cat; if(!F.nat||F.modo==="classificar") F.nat=MOT[F.motivo].nat; }
   if(!F.cat) F.cat=isEnt?"receitas":null;
   desenhaLanc(); abrirSheet();
@@ -753,6 +838,7 @@ function desenhaLanc(){
   if(F.modo==="classificar") h+=`<div class="banner" style="margin:0"><b>${esc(F.descricao||"Sem descrição")}</b><br><span class="num">${fmtData(F.data)} · ${brl(+F.valor)} · ${esc(bancoNome(F.conta))}</span></div>`;
   if(F.modo!=="classificar") h+=`<div class="tog"><button data-act="tipo" data-v="saida" aria-pressed="${F.tipo==="saida"}">Saiu dinheiro</button><button data-act="tipo" data-v="entrada" aria-pressed="${F.tipo==="entrada"}">Entrou dinheiro</button></div>
    <div class="fld"><label for="fValor">Valor</label><input class="valor num" id="fValor" inputmode="decimal" placeholder="0,00" value="${F.valor!==""?String(F.valor).replace(".",","):""}" ${travaValor?"readonly":""}></div>`;
+  h+=`<div class="fld"><label for="fUso">O que foi? <span class="muted small">escreva do seu jeito</span></label><input class="inp" id="fUso" value="${esc(F.uso||"")}" placeholder="Ex.: remédio, lanche com a equipe, pneu do carro" autocomplete="off"><div id="usoDica" class="small" style="margin-top:6px">${F.dica||""}</div></div>`;
   h+=`<div class="fld"><span class="lab">Categoria</span><div class="chips">${cats.map(x=>`<button class="chip" data-act="cat" data-v="${x.id}" aria-pressed="${F.cat===x.id}">${esc(x.nome)}</button>`).join("")}</div></div>`;
   if(cat) h+=`<div class="fld"><span class="lab">Motivo</span><div class="chips">${cat.m.map(([id,nome,nat])=>`<button class="chip mot" data-act="mot" data-v="${id}" aria-pressed="${F.motivo===id}">${esc(nome)} <span class="pill n n-${nat}">${NAT[nat].nome}</span></button>`).join("")}</div></div>`;
   if(F.tipo==="saida"&&F.motivo) h+=`<div class="fld"><span class="lab">Este gasto foi</span><div class="seg">${["E","C","V","F"].map(n=>`<button class="n-${n}" data-act="nat" data-v="${n}" aria-pressed="${F.nat===n}">${NAT[n].nome}</button>`).join("")}</div><div class="small muted">${F.nat?NAT[F.nat].dica:""}. Mude se, desta vez, foi diferente.</div></div>`;
@@ -764,10 +850,22 @@ function desenhaLanc(){
   h+=`<div class="btns"><button class="btn full" data-act="salvar-lanc">${F.modo==="classificar"?"Classificar":"Salvar"}</button>${F.id&&F.modo==="editar"?`<button class="btn sm danger" data-act="apagar-lanc">Apagar lançamento</button>`:""}</div>`;
   $("#sheetIn").innerHTML=h;
 }
+
+let usoTimer=null;
+document.addEventListener("input",e=>{
+  if(e.target&&e.target.id==="fUso"){ clearTimeout(usoTimer); usoTimer=setTimeout(()=>{
+    lerCampos(); const r=entenderUso(F.uso,F.tipo);
+    if(r){ F.motivo=r.motivo; F.cat=MOT[r.motivo].cat; F.nat=r.nat; if(r.pessoa) F.pessoa=r.pessoa;
+      F.dica=`✨ Entendi: <b>${esc(MOT[r.motivo].nome)}</b> · ${NAT[r.nat].nome}${r.conf==="media"&&r.alt.length?` <span class="muted">(ou ${r.alt.map(a=>esc(MOT[a].nome)).join(", ")}?)</span>`:""}. Confira abaixo e salve.`; }
+    else F.dica=F.uso?'<span class="muted">Não reconheci. Escolha abaixo — eu aprendo com a sua escolha.</span>':"";
+    desenhaLanc(); const u=$("#fUso"); if(u){ u.focus(); const L=u.value.length; try{u.setSelectionRange(L,L);}catch(_){} }
+  },450); }
+});
 function lerCampos(){
   const v=$("#fValor"); if(v&&!v.readOnly){ F.valor=parseValor(v.value); }
   const d=$("#fData"); if(d) F.data=d.value||hoje();
   const ds=$("#fDesc"); if(ds) F.descricao=ds.value.trim();
+  const us=$("#fUso"); if(us) F.uso=us.value.trim();
   const ct=$("#fConta"); if(ct&&!ct.disabled) F.conta=ct.value;
 }
 function parseValor(s){ s=String(s||"").replace(/[^\d,.-]/g,""); if(s.includes(",")) s=s.replace(/\./g,"").replace(",","."); const n=parseFloat(s); return isNaN(n)?"":Math.abs(n); }
@@ -777,7 +875,7 @@ async function salvarLanc(){
   if(!F.motivo){ toast("Escolha o motivo."); return; }
   const mo=MOT[F.motivo];
   const id=F.id||uid();
-  const doc={ data:F.data, mes:F.data.slice(0,7), valor:+F.valor, tipo:F.tipo, descricao:F.descricao, motivo:F.motivo, cat:mo.cat, nat:F.tipo==="entrada"?(mo.nat==="T"?"T":"R"):(F.nat||mo.nat), pessoa:F.pessoa, conta:F.conta, origem:F.origem, status:"ok", ...(F.meta&&(F.nat==="F"||F.motivo==="terreno")?{meta:F.meta}:{}), criadoEm:(F.orig&&F.orig.criadoEm)||new Date().toISOString() };
+  const doc={ data:F.data, mes:F.data.slice(0,7), valor:+F.valor, tipo:F.tipo, descricao:F.descricao, motivo:F.motivo, cat:mo.cat, nat:F.tipo==="entrada"?(mo.nat==="T"?"T":"R"):(F.nat||mo.nat), pessoa:F.pessoa, conta:F.conta, origem:F.origem, status:"ok", ...(F.uso?{uso:F.uso}:{}), ...(F.meta&&(F.nat==="F"||F.motivo==="terreno")?{meta:F.meta}:{}), criadoEm:(F.orig&&F.orig.criadoEm)||new Date().toISOString() };
   if(F.orig){ ["fitid","fatura","parcela","valorIntegral"].forEach(k=>{ if(F.orig[k]!==undefined) doc[k]=F.orig[k]; }); if(F.orig.fatura) doc.mes=F.orig.fatura; }
   try{
     await Store.set("lanc",id,doc);
